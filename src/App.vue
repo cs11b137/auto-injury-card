@@ -1,0 +1,82 @@
+<script setup lang="ts">
+import Upload from "./components/Upload.vue";
+</script>
+
+<template>
+  <header class="navbar">
+    <div class="navbar-wrapper">
+      <div class="logo-container">
+        <img class="logo" src="./assets/logo.svg" alt="logo" />
+        <h1 class="title">Auto Injury Card</h1>
+      </div>
+    </div>
+  </header>
+  <div class="container">
+    <div class="content">
+      <div class="upload"><Upload /></div>
+      <div class="result">2</div>
+      <div class="generate">3</div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.navbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 12;
+  width: 100%;
+}
+
+.navbar-wrapper {
+  position: relative;
+  border-bottom: 1px solid #dcdfe6;
+  height: 55px;
+  padding: 0 32px;
+  background-image: radial-gradient(transparent 1px, #fff 1px);
+  background-size: 4px 4px;
+  backdrop-filter: saturate(50%) blur(4px);
+  -webkit-backdrop-filter: saturate(50%) blur(4px);
+  top: 0;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.logo {
+  height: 32px;
+}
+
+.title {
+  margin-left: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #409eff;
+}
+
+.container {
+  display: flex;
+  padding: 20px 20px 55px;
+  flex: 1;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.content > div {
+  flex: 1;
+}
+
+.upload,
+.result {
+  border-right: 1px solid #e8e8e8;
+}
+</style>
