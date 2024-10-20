@@ -13,9 +13,16 @@ import Upload from "./components/Upload.vue";
   </header>
   <div class="container">
     <div class="content">
-      <div class="upload"><Upload /></div>
-      <div class="result">2</div>
-      <div class="generate">3</div>
+      <div class="upload">
+        <div class="upload-header-container">
+          <div class="upload-header">
+            <div class="upload-title">上传附件</div>
+          </div>
+        </div>
+        <Upload />
+      </div>
+      <div class="result"></div>
+      <div class="generate"></div>
     </div>
   </div>
 </template>
@@ -62,6 +69,7 @@ import Upload from "./components/Upload.vue";
   display: flex;
   padding: 20px 20px 55px;
   flex: 1;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .content {
@@ -78,5 +86,21 @@ import Upload from "./components/Upload.vue";
 .upload,
 .result {
   border-right: 1px solid #e8e8e8;
+}
+
+.upload-header-container {
+  padding: 0 16px;
+}
+
+.upload-header {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.upload-title {
+  font-size: 16px;
+  font-weight: 700;
 }
 </style>
