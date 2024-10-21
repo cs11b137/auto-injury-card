@@ -9,18 +9,19 @@
       :auto-upload="false"
       :limit="1"
       :http-request="uploadImage"
-      ref="uploadRef">
+      ref="uploadRef"
+    >
       <img v-if="imageUrl" :src="imageUrl" class="avatar" alt="" />
       <el-icon v-else class="avatar-uploader-icon">
         <upload-filled />
-        <div>将文件拖到此处或点击上传</div>
+        <div class="upload__text">将文件拖到此处或点击上传</div>
       </el-icon>
     </el-upload>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, defineExpose } from "vue";
 import { UploadFilled } from "@element-plus/icons-vue";
 import axios from "axios";
 import { ElMessage } from "element-plus";
@@ -56,6 +57,7 @@ const uploadImage = async (options: any) => {
 };
 
 const handleReselect = () => {
+  console.log(1234);
   imageUrl.value = "";
   if (uploadRef.value) {
     uploadRef.value.clearFiles();
@@ -69,6 +71,10 @@ const submitUpload = () => {
     ElMessage.warning("请先选择一张图片");
   }
 };
+
+defineExpose({
+  handleReselect,
+});
 </script>
 
 <style scoped>
@@ -86,9 +92,10 @@ const submitUpload = () => {
 }
 
 .avatar-uploader .avatar {
-  width: 178px;
-  height: 178px;
+  width: auto;
+  height: auto;
   display: block;
+  max-width: 80%;
 }
 
 .avatar-uploader .el-upload {
@@ -105,16 +112,27 @@ const submitUpload = () => {
 }
 
 .avatar-uploader-icon {
+  display: flex;
+  flex-direction: column;
   font-size: 28px;
   color: #8c939d;
-  width: 178px;
+  width: auto;
   height: 178px;
   text-align: center;
+}
+
+.avatar-uploader-icon svg {
+  width: 100px;
+  height: 100px;
 }
 
 .button-container {
   margin-top: 15px;
   display: flex;
   gap: 10px;
+}
+
+.upload__text {
+  font-size: 16px;
 }
 </style>

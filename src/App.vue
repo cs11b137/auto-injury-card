@@ -1,5 +1,18 @@
 <script setup lang="ts">
 import Upload from "./components/Upload.vue";
+import Add from "./components/Add.vue";
+import JsonViewer from "./components/JsonViewer.vue";
+import DamageTypeSetter from "./components/DamageTypeSetter.vue";
+import SingleImageDisplay from "./components/SingleImageDisplay.vue";
+import { ref } from "vue";
+
+const imageUploadRef = ref(null) as any;
+
+const handleParentReselect = () => {
+  if (imageUploadRef.value) {
+    imageUploadRef.value.handleReselect();
+  }
+};
 </script>
 
 <template>
@@ -17,11 +30,13 @@ import Upload from "./components/Upload.vue";
         <div class="upload-header-container">
           <div class="upload-header">
             <div class="upload-title">上传附件</div>
-            <el-button type="primary">重新选择</el-button>
+            <el-button type="primary" @click="handleParentReselect"
+              >重新选择</el-button
+            >
           </div>
         </div>
         <div class="upload-body">
-          <Upload />
+          <Upload ref="imageUploadRef" />
         </div>
       </div>
       <div class="result">
@@ -30,12 +45,28 @@ import Upload from "./components/Upload.vue";
             <div class="upload-title">识别结果</div>
           </div>
         </div>
+        <div class="result-config">
+          <div class="result-config-tt">配置提取字段：</div>
+          <div>
+            <Add />
+          </div>
+          <div>
+            <JsonViewer />
+          </div>
+        </div>
+        <div class="result-body"></div>
       </div>
       <div class="generate">
         <div class="upload-header-container">
           <div class="upload-header">
             <div class="upload-title">生成卡片</div>
           </div>
+        </div>
+        <div>
+          <DamageTypeSetter />
+        </div>
+        <div>
+          <SingleImageDisplay />
         </div>
       </div>
     </div>
@@ -110,6 +141,7 @@ import Upload from "./components/Upload.vue";
 .upload-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   height: 56px;
   border-bottom: 1px solid #e8e8e8;
 }
