@@ -17,12 +17,27 @@ import Upload from "./components/Upload.vue";
         <div class="upload-header-container">
           <div class="upload-header">
             <div class="upload-title">上传附件</div>
+            <el-button type="primary">重新选择</el-button>
           </div>
         </div>
-        <Upload />
+        <div class="upload-body">
+          <Upload />
+        </div>
       </div>
-      <div class="result"></div>
-      <div class="generate"></div>
+      <div class="result">
+        <div class="upload-header-container">
+          <div class="upload-header">
+            <div class="upload-title">识别结果</div>
+          </div>
+        </div>
+      </div>
+      <div class="generate">
+        <div class="upload-header-container">
+          <div class="upload-header">
+            <div class="upload-title">生成卡片</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -102,5 +117,17 @@ import Upload from "./components/Upload.vue";
 .upload-title {
   font-size: 16px;
   font-weight: 700;
+}
+
+.upload {
+  display: flex;
+  flex-direction: column;
+}
+
+.upload-body {
+  display: flex;
+  flex: 1;
+  padding: 20px 20px 40px;
+  flex-direction: column;
 }
 </style>

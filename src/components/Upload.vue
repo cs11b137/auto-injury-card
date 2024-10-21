@@ -1,22 +1,120 @@
 <template>
-  <el-upload
-    class="upload-demo"
-    drag
-    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-    multiple
-  >
-    <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-    <div class="el-upload__text">
-      Drop file here or <em>click to upload</em>
-    </div>
-    <template #tip>
-      <div class="el-upload__tip">
-        jpg/png files with a size less than 500kb
-      </div>
-    </template>
-  </el-upload>
+  <div class="image-upload">
+    <el-upload
+      class="avatar-uploader"
+      action="#"
+      drag
+      :show-file-list="false"
+      :on-change="handleChange"
+      :auto-upload="false"
+      :limit="1"
+      :http-request="uploadImage"
+      ref="uploadRef">
+      <img v-if="imageUrl" :src="imageUrl" class="avatar" alt="" />
+      <el-icon v-else class="avatar-uploader-icon">
+        <upload-filled />
+        <div>将文件拖到此处或点击上传</div>
+      </el-icon>
+    </el-upload>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { UploadFilled } from "@element-plus/icons-vue";
+import axios from "axios";
+import { ElMessage } from "element-plus";
+
+const imageUrl = ref("");
+const uploadRef = ref(null) as any;
+
+const handleChange = (file: any) => {
+  if (file && file.raw) {
+    imageUrl.value = URL.createObjectURL(file.raw);
+  } else {
+    ElMessage.error("文件选择失败，请重试");
+  }
+};
+
+const uploadImage = async (options: any) => {
+  try {
+    const formData = new FormData();
+    formData.append("image", options.file);
+
+    const response = await axios.post("/api/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    ElMessage.success("图片上传成功");
+    console.log(response.data);
+  } catch (error) {
+    ElMessage.error("上传失败");
+    console.error(error);
+  }
+};
+
+const handleReselect = () => {
+  imageUrl.value = "";
+  if (uploadRef.value) {
+    uploadRef.value.clearFiles();
+  }
+};
+
+const submitUpload = () => {
+  if (uploadRef.value && uploadRef.value.uploadFiles.length > 0) {
+    uploadImage({ file: uploadRef.value.uploadFiles[0].raw });
+  } else {
+    ElMessage.warning("请先选择一张图片");
+  }
+};
 </script>
+
+<style scoped>
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.avatar-uploader {
+  display: flex;
+  width: 100%;
+  flex: 1;
+}
+
+.avatar-uploader .avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  text-align: center;
+}
+
+.button-container {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+</style>
