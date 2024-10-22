@@ -17,50 +17,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, inject } from "vue";
+import { ref, inject } from "vue";
 import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
 
 const { result } = inject("result") as any;
 
-const jsonInput = ref("");
 const jsonData = ref(result);
 const errorMessage = ref("");
-
-const isValidJson = computed(() => {
-  try {
-    JSON.parse(jsonInput.value);
-    return true;
-  } catch {
-    return false;
-  }
-});
-
-const updateJsonData = () => {
-  try {
-    jsonData.value = JSON.parse(jsonInput.value);
-    errorMessage.value = "";
-  } catch (error) {
-    jsonData.value = null;
-    errorMessage.value = "无效的 JSON 格式";
-  }
-};
-
-const formatJson = () => {
-  try {
-    const formatted = JSON.stringify(JSON.parse(jsonInput.value), null, 2);
-    jsonInput.value = formatted;
-    updateJsonData();
-  } catch (error: any) {
-    errorMessage.value = "无法格式化 JSON：" + error.message;
-  }
-};
-
-const clearJson = () => {
-  jsonInput.value = "";
-  jsonData.value = null;
-  errorMessage.value = "";
-};
 
 const handleClick = (path: any, data: any) => {
   console.log("Clicked path:", path);

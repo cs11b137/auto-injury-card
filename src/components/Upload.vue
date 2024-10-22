@@ -24,12 +24,7 @@
 import { ref, defineExpose, inject } from "vue";
 import { UploadFilled } from "@element-plus/icons-vue";
 import axios from "axios";
-import {
-  ElMessage,
-  type UploadInstance,
-  type UploadProps,
-  type UploadRawFile,
-} from "element-plus";
+import { ElMessage, type UploadRawFile } from "element-plus";
 
 const { key } = inject("key") as any;
 const { updateResult } = inject("result") as any;

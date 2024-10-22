@@ -6,6 +6,7 @@ import DamageTypeSetter from "./components/DamageTypeSetter.vue";
 import SingleImageDisplay from "./components/SingleImageDisplay.vue";
 import { ref, provide } from "vue";
 import localImage from "./assets/demo.jpg";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 const key = ref("");
 const result = ref(null);
