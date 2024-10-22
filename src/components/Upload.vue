@@ -24,7 +24,7 @@
 import { ref, defineExpose, inject } from "vue";
 import { UploadFilled } from "@element-plus/icons-vue";
 import axios from "axios";
-import { ElMessage, type UploadRawFile } from "element-plus";
+import { type UploadRawFile } from "element-plus";
 
 const { key } = inject("key") as any;
 const { updateResult } = inject("result") as any;
@@ -40,6 +40,7 @@ const beforeUpload = (file: File) => {
   const isValidType = allowedTypes.includes(file.type);
 
   if (!isValidType) {
+    // @ts-ignore
     ElMessage.error("只支持 PNG、JPG、JPEG 格式的图片！");
     return false;
   }
@@ -47,6 +48,7 @@ const beforeUpload = (file: File) => {
   // 检查文件大小（50MB）
   const maxSize = 50 * 1024 * 1024;
   if (file.size > maxSize) {
+    // @ts-ignore
     ElMessage.error("文件大小不能超过 50MB！");
     return false;
   }
@@ -65,6 +67,7 @@ const beforeUpload = (file: File) => {
         ) {
           resolve(true);
         } else {
+          // @ts-ignore
           ElMessage.error("图片尺寸必须在 20x20 到 10000x10000 之间！");
           reject(false);
         }
@@ -80,6 +83,7 @@ const handleChange = (uploadFile: any) => {
     imageUrl.value = URL.createObjectURL(uploadFile.raw);
     currentFile.value = uploadFile.raw;
   } else {
+    // @ts-ignore
     ElMessage.error("文件选择失败，请重试");
     currentFile.value = null;
   }
@@ -108,6 +112,7 @@ const uploadImage = async (file: File) => {
           }
         );
 
+        // @ts-ignore
         ElMessage({
           type: "success",
           message: "文档处理成功",
@@ -115,15 +120,18 @@ const uploadImage = async (file: File) => {
         console.log(response.data);
         updateResult(response.data);
       } catch (error: any) {
+        // @ts-ignore
         ElMessage.error(error.response?.data?.message || "处理失败");
         console.error(error);
       }
     };
 
     reader.onerror = () => {
+      // @ts-ignore
       ElMessage.error("文件读取失败");
     };
   } catch (error) {
+    // @ts-ignore
     ElMessage.error("上传失败");
     console.error(error);
   }
@@ -140,6 +148,7 @@ const submitUpload = () => {
   if (currentFile.value) {
     uploadImage(currentFile.value);
   } else {
+    // @ts-ignore
     ElMessage.warning("请先选择一张图片");
   }
 };

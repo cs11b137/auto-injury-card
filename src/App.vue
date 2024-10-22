@@ -6,7 +6,6 @@ import DamageTypeSetter from "./components/DamageTypeSetter.vue";
 import SingleImageDisplay from "./components/SingleImageDisplay.vue";
 import { ref, provide } from "vue";
 import localImage from "./assets/demo.jpg";
-import { ElMessage, ElMessageBox } from "element-plus";
 
 const key = ref("");
 const result = ref(null);
@@ -47,11 +46,13 @@ const handleParentUpload = () => {
 
 const handleGenerateCard = () => {
   if (damageTypeSetterRef.value.damageTypes.length === 0) {
+    // @ts-ignore
     ElMessageBox.alert("该病历不是伤害类型的病历", "警告", {
       confirmButtonText: "确定",
     });
     SingleImageDisplayRef.value.updateImageUrl(null);
   } else {
+    // @ts-ignore
     ElMessage.success("生成成功");
     SingleImageDisplayRef.value.updateImageUrl(localImage);
   }
