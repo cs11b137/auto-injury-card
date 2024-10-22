@@ -9,8 +9,8 @@
       :auto-upload="false"
       :limit="1"
       :http-request="uploadImage"
-      ref="uploadRef"
-    >
+      :before-upload="beforeUpload"
+      ref="uploadRef">
       <img v-if="imageUrl" :src="imageUrl" class="avatar" alt="" />
       <el-icon v-else class="avatar-uploader-icon">
         <upload-filled />
@@ -21,35 +21,113 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineExpose } from "vue";
+import { ref, defineExpose, inject } from "vue";
 import { UploadFilled } from "@element-plus/icons-vue";
 import axios from "axios";
-import { ElMessage } from "element-plus";
+import {
+  ElMessage,
+  type UploadInstance,
+  type UploadProps,
+  type UploadRawFile,
+} from "element-plus";
+
+const { key } = inject("key") as any;
+const { updateResult } = inject("result") as any;
 
 const imageUrl = ref("");
 const uploadRef = ref(null) as any;
+const currentFile = ref<UploadRawFile | null>(null);
 
-const handleChange = (file: any) => {
-  if (file && file.raw) {
-    imageUrl.value = URL.createObjectURL(file.raw);
+// 文件验证
+const beforeUpload = (file: File) => {
+  // 检查文件类型
+  const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+  const isValidType = allowedTypes.includes(file.type);
+
+  if (!isValidType) {
+    ElMessage.error("只支持 PNG、JPG、JPEG 格式的图片！");
+    return false;
+  }
+
+  // 检查文件大小（50MB）
+  const maxSize = 50 * 1024 * 1024;
+  if (file.size > maxSize) {
+    ElMessage.error("文件大小不能超过 50MB！");
+    return false;
+  }
+
+  // 如果是图片，检查尺寸
+  if (file.type.startsWith("image/")) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        if (
+          img.width >= 20 &&
+          img.width <= 10000 &&
+          img.height >= 20 &&
+          img.height <= 10000
+        ) {
+          resolve(true);
+        } else {
+          ElMessage.error("图片尺寸必须在 20x20 到 10000x10000 之间！");
+          reject(false);
+        }
+      };
+    });
+  }
+
+  return true;
+};
+
+const handleChange = (uploadFile: any) => {
+  if (uploadFile && uploadFile.raw) {
+    imageUrl.value = URL.createObjectURL(uploadFile.raw);
+    currentFile.value = uploadFile.raw;
   } else {
     ElMessage.error("文件选择失败，请重试");
+    currentFile.value = null;
   }
 };
 
-const uploadImage = async (options: any) => {
+const uploadImage = async (file: File) => {
   try {
-    const formData = new FormData();
-    formData.append("image", options.file);
+    // 读取文件为二进制数据
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file);
 
-    const response = await axios.post("/api/upload", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    reader.onload = async () => {
+      try {
+        const response = await axios.post(
+          "https://api.textin.com/ai/service/v1/entity_extraction",
+          reader.result,
+          {
+            headers: {
+              "Content-Type": "application/octet-stream",
+              "x-ti-app-id": "8234d5965139e24f0260db7e25844508", // 需要替换为实际的 app-id
+              "x-ti-secret-code": "bbba79ab9c8908a094b09dd9c3ea8949", // 需要替换为实际的 secret-code
+            },
+            params: {
+              key: key.value, // 根据需要设置key值
+            },
+          }
+        );
 
-    ElMessage.success("图片上传成功");
-    console.log(response.data);
+        ElMessage({
+          type: "success",
+          message: "文档处理成功",
+        });
+        console.log(response.data);
+        updateResult(response.data);
+      } catch (error: any) {
+        ElMessage.error(error.response?.data?.message || "处理失败");
+        console.error(error);
+      }
+    };
+
+    reader.onerror = () => {
+      ElMessage.error("文件读取失败");
+    };
   } catch (error) {
     ElMessage.error("上传失败");
     console.error(error);
@@ -57,7 +135,6 @@ const uploadImage = async (options: any) => {
 };
 
 const handleReselect = () => {
-  console.log(1234);
   imageUrl.value = "";
   if (uploadRef.value) {
     uploadRef.value.clearFiles();
@@ -65,8 +142,8 @@ const handleReselect = () => {
 };
 
 const submitUpload = () => {
-  if (uploadRef.value && uploadRef.value.uploadFiles.length > 0) {
-    uploadImage({ file: uploadRef.value.uploadFiles[0].raw });
+  if (currentFile.value) {
+    uploadImage(currentFile.value);
   } else {
     ElMessage.warning("请先选择一张图片");
   }
@@ -74,6 +151,7 @@ const submitUpload = () => {
 
 defineExpose({
   handleReselect,
+  submitUpload,
 });
 </script>
 

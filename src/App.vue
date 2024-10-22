@@ -4,13 +4,55 @@ import Add from "./components/Add.vue";
 import JsonViewer from "./components/JsonViewer.vue";
 import DamageTypeSetter from "./components/DamageTypeSetter.vue";
 import SingleImageDisplay from "./components/SingleImageDisplay.vue";
-import { ref } from "vue";
+import { ref, provide } from "vue";
+import localImage from "./assets/demo.jpg";
+
+const key = ref("");
+const result = ref(null);
+
+const updateKey = (val: any) => {
+  key.value = val;
+};
+
+const updateResult = (val: any) => {
+  result.value = val;
+};
+
+provide("key", {
+  key,
+  updateKey,
+});
+
+provide("result", {
+  result,
+  updateResult,
+});
 
 const imageUploadRef = ref(null) as any;
+const damageTypeSetterRef = ref(null) as any;
+const SingleImageDisplayRef = ref(null) as any;
 
 const handleParentReselect = () => {
   if (imageUploadRef.value) {
     imageUploadRef.value.handleReselect();
+  }
+};
+
+const handleParentUpload = () => {
+  if (imageUploadRef.value) {
+    imageUploadRef.value.submitUpload();
+  }
+};
+
+const handleGenerateCard = () => {
+  if (damageTypeSetterRef.value.damageTypes.length === 0) {
+    ElMessageBox.alert("该病历不是伤害类型的病历", "警告", {
+      confirmButtonText: "确定",
+    });
+    SingleImageDisplayRef.value.updateImageUrl(null);
+  } else {
+    ElMessage.success("生成成功");
+    SingleImageDisplayRef.value.updateImageUrl(localImage);
   }
 };
 </script>
@@ -20,7 +62,7 @@ const handleParentReselect = () => {
     <div class="navbar-wrapper">
       <div class="logo-container">
         <img class="logo" src="./assets/logo.svg" alt="logo" />
-        <h1 class="title">Auto Injury Card</h1>
+        <h1 class="title">自动生成伤害卡</h1>
       </div>
     </div>
   </header>
@@ -29,7 +71,7 @@ const handleParentReselect = () => {
       <div class="upload">
         <div class="upload-header-container">
           <div class="upload-header">
-            <div class="upload-title">上传附件</div>
+            <div class="upload-title">上传病历附件</div>
             <el-button type="primary" @click="handleParentReselect"
               >重新选择</el-button
             >
@@ -42,31 +84,36 @@ const handleParentReselect = () => {
       <div class="result">
         <div class="upload-header-container">
           <div class="upload-header">
-            <div class="upload-title">识别结果</div>
+            <div class="upload-title">抽取病历结果</div>
+            <el-button type="primary" @click="handleParentUpload"
+              >抽取字段</el-button
+            >
           </div>
         </div>
         <div class="result-config">
-          <div class="result-config-tt">配置提取字段：</div>
-          <div>
+          <div class="result-config-body">
             <Add />
           </div>
-          <div>
-            <JsonViewer />
-          </div>
         </div>
-        <div class="result-body"></div>
+        <div class="result-body">
+          <JsonViewer />
+        </div>
       </div>
       <div class="generate">
         <div class="upload-header-container">
           <div class="upload-header">
-            <div class="upload-title">生成卡片</div>
+            <div class="upload-title">生成伤害卡</div>
+            <el-button type="primary" @click="handleGenerateCard"
+              >生成报告卡</el-button
+            >
           </div>
         </div>
         <div>
-          <DamageTypeSetter />
+          <DamageTypeSetter ref="damageTypeSetterRef" />
         </div>
-        <div>
-          <SingleImageDisplay />
+        <div class="generate-title">报告卡：</div>
+        <div class="generate-body">
+          <SingleImageDisplay ref="SingleImageDisplayRef" />
         </div>
       </div>
     </div>
@@ -161,5 +208,40 @@ const handleParentReselect = () => {
   flex: 1;
   padding: 20px 20px 40px;
   flex-direction: column;
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+}
+
+.result-config {
+  padding: 20px 20px 0;
+}
+
+.result-body {
+  display: flex;
+  flex: 1;
+}
+
+.result-config-body {
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.generate {
+  display: flex;
+  flex-direction: column;
+}
+
+.generate-body {
+  display: flex;
+  flex: 1;
+  padding: 0 20px 40px;
+}
+
+.generate-title {
+  font-size: 14px;
+  padding-left: 20px;
+  margin-bottom: 10px;
 }
 </style>

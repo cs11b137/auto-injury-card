@@ -2,19 +2,19 @@
   <div class="damage-type-container">
     <!-- 输入区域 -->
     <div class="input-section">
+      <div class="input-title">设置伤害的类型:</div>
       <el-input
         v-model="inputValue"
-        placeholder="请输入伤害类型名称"
+        placeholder="请输入伤害类型"
         @keyup.enter="handleAdd"
-        class="damage-input"
-      />
-      <el-button type="primary" @click="handleAdd">添加</el-button>
+        class="damage-input" />
+      <el-button type="default" @click="handleAdd">添加</el-button>
     </div>
 
     <!-- 简单列表 -->
     <ul class="damage-list">
       <li v-for="(type, index) in damageTypes" :key="index" class="damage-item">
-        <span class="item-name">{{ type.name }}</span>
+        <span class="item-name">{{ type }}</span>
         <el-button type="danger" link @click="handleDelete(index)">
           删除
         </el-button>
@@ -23,36 +23,36 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import { ElMessage } from "element-plus";
+<script setup lang="ts">
+import { ref, defineExpose } from "vue";
 
 // 响应式数据
-const inputValue = ref("");
-const damageTypes = ref([]);
+const inputValue = ref("") as any;
+const damageTypes = ref([]) as any;
 
 // 添加伤害类型
 const handleAdd = () => {
   if (!inputValue.value.trim()) {
-    ElMessage.warning("请输入伤害类型名称");
     return;
   }
 
-  if (damageTypes.value.some((item) => item.name === inputValue.value.trim())) {
-    ElMessage.warning("该伤害类型已存在");
+  if (damageTypes.value.some((item: any) => item === inputValue.value.trim())) {
     return;
   }
 
-  damageTypes.value.push({
-    name: inputValue.value.trim(),
-  });
+  damageTypes.value.push(inputValue.value.trim());
   inputValue.value = "";
 };
 
 // 删除伤害类型
-const handleDelete = (index) => {
+const handleDelete = (index: any) => {
   damageTypes.value.splice(index, 1);
 };
+
+// 暴露方法
+defineExpose({
+  damageTypes,
+});
 </script>
 
 <style scoped>
@@ -65,7 +65,8 @@ const handleDelete = (index) => {
 .input-section {
   display: flex;
   gap: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  align-items: center;
 }
 
 .damage-input {
@@ -76,6 +77,7 @@ const handleDelete = (index) => {
   list-style: none;
   padding: 0;
   margin: 0;
+  border-bottom: 1px solid #ebeef5;
 }
 
 .damage-item {
@@ -92,5 +94,9 @@ const handleDelete = (index) => {
 .item-name {
   font-size: 14px;
   color: #606266;
+}
+
+.input-title {
+  font-size: 14px;
 }
 </style>

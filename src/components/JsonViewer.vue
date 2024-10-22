@@ -1,36 +1,30 @@
 <template>
   <div class="json-viewer-container">
-    <el-input
-      type="textarea"
-      v-model="jsonInput"
-      :rows="5"
-      placeholder="请输入 JSON 数据"
-      @input="updateJsonData"
-    ></el-input>
-    <el-button type="primary" @click="formatJson" :disabled="!isValidJson"
-      >格式化 JSON</el-button
-    >
-    <el-button @click="clearJson">清除</el-button>
+    <div class="json-input-title">JSON结果：</div>
     <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
-    <div v-if="jsonData" class="json-view-wrapper">
+    <div class="json-view-wrapper" v-if="jsonData">
       <vue-json-pretty
         :data="jsonData"
         :deep="1"
         :show-double-quotes="true"
         :show-length="true"
-        @click="handleClick"
-      ></vue-json-pretty>
+        @click="handleClick"></vue-json-pretty>
+    </div>
+    <div class="json-view-wrapper json-empty" v-else>
+      <el-empty :image-size="100" description="暂无结果" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, inject } from "vue";
 import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
 
+const { result } = inject("result") as any;
+
 const jsonInput = ref("");
-const jsonData = ref(null);
+const jsonData = ref(result);
 const errorMessage = ref("");
 
 const isValidJson = computed(() => {
@@ -78,7 +72,10 @@ const handleClick = (path: any, data: any) => {
 .json-viewer-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 20px 40px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .el-input {
@@ -101,5 +98,17 @@ const handleClick = (path: any, data: any) => {
   padding: 10px;
   overflow: auto;
   max-height: 500px;
+  flex: 1;
+}
+
+.json-input-title {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.json-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
