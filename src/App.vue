@@ -5,7 +5,7 @@ import JsonViewer from "./components/JsonViewer.vue";
 import DamageTypeSetter from "./components/DamageTypeSetter.vue";
 import SingleImageDisplay from "./components/SingleImageDisplay.vue";
 import { ref, provide } from "vue";
-import localImage from "./assets/demo.jpg";
+import localImage from "./assets/demo2.png";
 
 const key = ref("");
 const result = ref(null);
@@ -98,14 +98,14 @@ const handleGenerateCard = () => {
           <div class="upload-header">
             <div class="upload-title">生成伤害卡</div>
             <el-button type="primary" @click="handleGenerateCard"
-              >生成报告卡</el-button
+              >生成卡片</el-button
             >
           </div>
         </div>
         <div>
           <DamageTypeSetter ref="damageTypeSetterRef" />
         </div>
-        <div class="generate-title">报告卡：</div>
+        <div class="generate-title">伤害卡：</div>
         <div class="generate-body">
           <SingleImageDisplay ref="SingleImageDisplayRef" />
         </div>

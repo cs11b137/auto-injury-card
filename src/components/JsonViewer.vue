@@ -8,7 +8,8 @@
         :deep="1"
         :show-double-quotes="true"
         :show-length="true"
-        @click="handleClick"></vue-json-pretty>
+        @click="handleClick"
+      ></vue-json-pretty>
     </div>
     <div class="json-view-wrapper json-empty" v-else>
       <el-empty :image-size="100" description="暂无结果" />
@@ -61,7 +62,7 @@ const handleClick = (path: any, data: any) => {
   border-radius: 4px;
   padding: 10px;
   overflow: auto;
-  max-height: 500px;
+  max-height: 800px;
   flex: 1;
 }
 

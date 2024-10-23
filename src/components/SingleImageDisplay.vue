@@ -6,7 +6,8 @@
       :preview-src-list="[imageUrl]"
       fit="contain"
       :initial-index="0"
-      class="image">
+      class="image"
+    >
       <!-- 加载中显示骨架屏 -->
       <template #placeholder>
         <div class="image-placeholder">
@@ -14,7 +15,8 @@
             <template #template>
               <el-skeleton-item
                 variant="image"
-                style="width: 100%; height: 100%" />
+                style="width: 100%; height: 100%"
+              />
             </template>
           </el-skeleton>
         </div>
@@ -63,8 +65,7 @@ defineExpose({
 }
 
 .image {
-  width: 100%;
-  height: 300px;
+  width: 78%;
   display: block;
   cursor: pointer;
 }
