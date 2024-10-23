@@ -45,17 +45,9 @@ const handleParentUpload = () => {
 };
 
 const handleGenerateCard = () => {
-  if (damageTypeSetterRef.value.damageTypes.length === 0) {
-    // @ts-ignore
-    ElMessageBox.alert("该病历不是伤害类型的病历", "警告", {
-      confirmButtonText: "确定",
-    });
-    SingleImageDisplayRef.value.updateImageUrl(null);
-  } else {
-    // @ts-ignore
-    ElMessage.success("生成成功");
-    SingleImageDisplayRef.value.updateImageUrl(localImage);
-  }
+  // @ts-ignore
+  ElMessage.success("生成成功");
+  SingleImageDisplayRef.value.updateImageUrl(localImage);
 };
 </script>
 
