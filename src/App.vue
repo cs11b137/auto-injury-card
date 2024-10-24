@@ -5,7 +5,7 @@ import JsonViewer from "./components/JsonViewer.vue";
 import DamageTypeSetter from "./components/DamageTypeSetter.vue";
 import SingleImageDisplay from "./components/SingleImageDisplay.vue";
 import { ref, provide } from "vue";
-import localImage from "./assets/demo2.png";
+import localImage from "./assets/demo3.jpg";
 
 const key = ref("");
 const result = ref(null);
